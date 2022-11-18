@@ -10,6 +10,7 @@ export const MainContext = React.createContext();
 
 
 function App() {
+	
 	const [store, setStore] = useState([])
 	const [count, setCount] = useState(0)
 	const [idbasket, setBasket] = useState([])
@@ -46,6 +47,8 @@ function App() {
 		setCount(countTmp)
 }
 
+
+
 	function setStorage () {
 		let storeTmp = store;
 		storeTmp = fetch('https://fakestoreapi.com/products/')
@@ -68,6 +71,9 @@ function App() {
 		return storeTmp;
 		
 	};
+
+	setStorage();
+
 	
 	return (
 		<>
@@ -82,6 +88,19 @@ function App() {
 		
 	);
 }
+
+// const storage = async function() {
+// 	let storeData = localStorage.getItem('data');
+// 	if (storeData) storeData = JSON.parse(storeData);
+// 	if(storeData && storeData.length > 0) return storeData;
+// 	storeData = await fetch('https://fakestoreapi.com/products/')
+// 	.then(response => response.text())
+// 	.then(data => {
+// 		localStorage.setItem('data', data);
+// 		return storage()
+// 	});
+	
+// }
 
 
 export default App;
