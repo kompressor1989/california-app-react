@@ -4,7 +4,7 @@ import Logo from '../images/logo.png';
 function Footer() {
 	return (
 		<footer className="footer">
-			<div className="footer__item">
+			<div className="footer__item footer__logo">
 				<a href="/"><img src={Logo} alt="Company California" /></a>
 				<p>Sign up for texts to be notified about our best offers on the perfect gifts.</p>
 			</div>

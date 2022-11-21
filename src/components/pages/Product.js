@@ -2,8 +2,7 @@ import React, {useContext, useState, useEffect} from "react";
 import {useLocation} from "react-router";
 import { Link } from "react-router-dom";
 import { MainContext, useRef } from "../../App"
-import Allproducts from "./Allproducts"
-// import {MainContext} from "../../App";
+import Swal from 'sweetalert2'
 
 
 function Product () {
@@ -21,7 +20,7 @@ function Product () {
     
     product = product.find(item => item.id === iD);
 
-    function addCart (e, id) {
+    function addCart (e, id, title) {
 		let basket = idbasket;
 		if(!id) return;
 		
@@ -32,10 +31,18 @@ function Product () {
 		basket = localStorage.getItem('BasketTmp');
 		if (!basket) return;
 		if (basket) basket = JSON.parse(basket);
-		console.log(basket)
-		setBasket(basket)
-		addCounter()
-		 	
+		console.log(basket);
+		setBasket(basket);
+		addCounter();
+		Swal.fire({
+			title: `${title}`,
+			text: 'Товар добавлен в корзину!',
+			icon: 'success',
+			confirmButtonText: 'OK',
+			heightAuto: 'false',
+			width: '200px',
+
+		  })  	 	
 	}
 
     function addCounter() {
@@ -61,7 +68,7 @@ function Product () {
                         <h1>{product.title}</h1>
                         <div className="price">Now only ${product.price}</div>
                         <div className="description">{product.description}</div>
-                        <button key={product.id} onClick={(e) => addCart(e, product.id) } className="btn__explore add_cart">Add to cart</button>
+                        <button key={product.id} onClick={(e) => addCart(e, product.id, product.title) } className="btn__explore add_cart">Add to cart</button>
             </div>
             
         </div>

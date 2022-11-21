@@ -1,6 +1,8 @@
+import { getElementError } from "@testing-library/react";
 import React, {useContext, useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import { MainContext, useRef } from "../../App";
+import Swal from 'sweetalert2'
 
 
 function Allproducts () {
@@ -8,7 +10,9 @@ function Allproducts () {
 	const {idbasket, setBasket} = useContext(MainContext);
 	const {store, setStore} = useContext(MainContext);
 	const {count, setCount} = useContext(MainContext);
-	
+
+	const [active, setActive] = useState({clname:"name0"});
+	console.log(active)
 
 	useEffect(() => {
 		
@@ -34,7 +38,21 @@ function Allproducts () {
 	
 	console.log(idbasket)
 
-	function addCart (e, id) {
+	function onClickBTN(id) {
+		let activeTmp = active;
+		idbasket.forEach(e => {
+			activeTmp = {clname: 'name' + id}
+			
+		});
+		// activeTmp = {clname:'name' + id};
+		setActive(activeTmp);
+		
+		
+		// alert("Товар добавлен в корзину")
+	}
+
+
+	function addCart (e, id, title) {
 		let basket = idbasket;
 		if(!id) return;
 		
@@ -48,7 +66,17 @@ function Allproducts () {
 		console.log(basket)
 		setBasket(basket)
 		addCounter()
-		 	
+		onClickBTN(id)
+		
+		Swal.fire({
+			title: `${title}`,
+			text: 'Товар добавлен в корзину!',
+			icon: 'success',
+			confirmButtonText: 'OK',
+			heightAuto: 'false',
+			width: '200px',
+			
+		  })
 	}
 
 	function addCounter() {
@@ -60,6 +88,7 @@ function Allproducts () {
 			setCount(countTmp)
 	}
 
+	
 
 	function add() {
 	
@@ -70,7 +99,7 @@ function Allproducts () {
 							<Link to={`/product/${item.id}/`}><img src={item.image} alt={item.category}></img></Link>
 							<h4>{item.title}</h4>
 							<div className="item__bottom">
-								<button key={item.id} onClick={(e) => addCart(e, item.id) } className="btn__explore add_cart">Add to cart</button>
+								<button key={item.id} onClick={(e) => addCart(e, item.id, item.title)} className={(active.clname === 'name' + (item.id)) ? "activeBTN" : ' '}>Add to cart</button>
 								<span>{item.price} $</span>
 							</div>
 						</div>)

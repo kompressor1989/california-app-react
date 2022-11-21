@@ -1,6 +1,7 @@
 import React, {useContext, useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import { MainContext, useRef } from "../../App";
+import Swal from 'sweetalert2'
 
 function Laptops() {
 	const {idbasket, setBasket} = useContext(MainContext);
@@ -11,7 +12,7 @@ function Laptops() {
     
     laptops = laptops.filter(item => item.category === "jewelery");
 
-	function addCart (e, id) {
+	function addCart (e, id, title) {
 		let basket = idbasket;
 		if(!id) return;
 		
@@ -25,7 +26,16 @@ function Laptops() {
 		console.log(basket)
 		setBasket(basket)
 		addCounter()
-		 	
+		// window.swal(`${title}`, "Товар добавлен в козину!", "success")
+		Swal.fire({
+			title: `${title}`,
+			text: 'Товар добавлен в корзину!',
+			icon: 'success',
+			confirmButtonText: 'OK',
+			heightAuto: 'false',
+			width: '200px',
+
+		  })  	
 	}
 
     function addCounter() {
@@ -46,7 +56,7 @@ function Laptops() {
 							<Link to={`/product/${item.id}/`}><img src={item.image} alt={item.category}></img></Link>
 							<h4>{item.title}</h4>
 							<div className="item__bottom">
-								<button key={item.id} onClick={(e) => addCart(e, item.id) } className="btn__explore add_cart">Add to cart</button>
+								<button key={item.id} onClick={(e) => addCart(e, item.id, item.title) } className="btn__explore add_cart">Add to cart</button>
 								<span>{item.price} $</span>
 							</div>
 						</div>)
