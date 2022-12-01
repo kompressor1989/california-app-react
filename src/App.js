@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react'
 import { 
-	BrowserRouter as Router
-} from 'react-router-dom';
+	BrowserRouter as Router} from 'react-router-dom';
 import Header from './components/Header';
 import Main from './components/Main';
 import Footer from './components/Footer.js';
+import Swal from 'sweetalert2'
 export const MainContext = React.createContext();
 
 
@@ -19,13 +19,13 @@ function App() {
 		if (!count || count.length === 0){
 			addCounter()
 		}
-		
+		// eslint-disable-next-line
 	},[count])
 	
 	useEffect(() => {
-		setStorage()
+		// setStorage()
 		if (!store || store.length === 0)  {
-			let storeLocal = getStorage();
+			let storeLocal = setStorage();
 		
 			if (storeLocal && storeLocal.length > 0) {
 				setStore([...storeLocal])
@@ -37,7 +37,39 @@ function App() {
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps		
 	},[store]);
-	
+
+
+	function addCart (e, id, title) {
+		let basket = idbasket;
+		if(!id) return;
+		if(basket.indexOf(id) !== -1){
+			basket = basket.filter(item => item !== id)
+		} else {
+			basket.push(id);
+		}
+		
+		const idbasketTmp = new Set(basket);
+		basket = [...idbasketTmp];
+		localStorage.setItem('BasketTmp', JSON.stringify(basket));
+		basket = localStorage.getItem('BasketTmp');
+		if (!basket) return;
+		if (basket) basket = JSON.parse(basket);
+		console.log(basket)
+		setBasket(basket)
+		addCounter()
+		
+		
+		Swal.fire({
+			title: `${title}`,
+			text: 'Товар добавлен в корзину!',
+			icon: 'success',
+			confirmButtonText: 'OK',
+			heightAuto: 'false',
+			width: '200px',
+			
+		  })
+	}
+
 	function addCounter() {
 		let countTmp = count
 		countTmp = localStorage.getItem('BasketTmp')
@@ -47,37 +79,28 @@ function App() {
 		setCount(countTmp)
 }
 
-
-
 	function setStorage () {
-		let storeTmp = store;
-		storeTmp = fetch('https://fakestoreapi.com/products/')
-		.then(response => response.text())
+		if (store.length !==0) return;
+		let localTmp = localStorage.getItem('data');
+		if(localTmp) localTmp = JSON.parse(localTmp);
+		if(localTmp && localTmp.length>0) {
+			setStore([...localTmp]);
+			return;
+		}
+		fetch('https://fakestoreapi.com/products/')
+		.then(response => response.json())
 		.then(data => {
-			if (!storeTmp) return;
-			localStorage.setItem('data', data);
-			
+			setStore([...data]);
+			localStorage.setItem('data', JSON.stringify(data));
 		});
 		
 	}
 
-	function getStorage () {
-		let storeTmp = localStorage.getItem('data');
-		if (!storeTmp) return;
-		if (storeTmp) storeTmp = JSON.parse(storeTmp);
+	setStorage()
 
-		if (!storeTmp) return;
-		
-		return storeTmp;
-		
-	};
-
-	setStorage();
-
-	
 	return (
 		<>
-			<MainContext.Provider value={{store, setStore, count, setCount, idbasket, setBasket}}>
+			<MainContext.Provider value={{store, setStore, count, setCount, idbasket, setBasket, addCart, addCounter}}>
 			<Router>
 				<Header />
 				<Main />
@@ -88,19 +111,6 @@ function App() {
 		
 	);
 }
-
-// const storage = async function() {
-// 	let storeData = localStorage.getItem('data');
-// 	if (storeData) storeData = JSON.parse(storeData);
-// 	if(storeData && storeData.length > 0) return storeData;
-// 	storeData = await fetch('https://fakestoreapi.com/products/')
-// 	.then(response => response.text())
-// 	.then(data => {
-// 		localStorage.setItem('data', data);
-// 		return storage()
-// 	});
-	
-// }
 
 
 export default App;

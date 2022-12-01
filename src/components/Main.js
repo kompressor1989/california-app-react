@@ -5,7 +5,6 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Support from './pages/Support';
 import Allproducts from "./pages/Allproducts";
-import Solutions from "./pages/Solutions";
 import Contacts from "./pages/Contacts";
 import Laptops from "./pages/Laptop";
 import Watches from "./pages/Watches";
@@ -27,7 +26,6 @@ function Main() {
 			<Route path="/" element={<Home />} />
 			<Route path="/allproducts/" element={<Allproducts />} />
 			<Route path="/product/:id/" element={<Product />} />
-			<Route path="/solutions/" element={<Solutions />} />
 			<Route path="/solutions/laptops/" element={<Laptops />} />
 			<Route path="/solutions/watches/" element={<Watches />} />
 			<Route path="/solutions/phones/" element={<Phones />} />

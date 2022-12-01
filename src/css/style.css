@@ -853,6 +853,11 @@ body {
 
 /* All products */
 
+.added button {
+    background: lightseagreen;
+    border: 2px solid lightseagreen;
+}
+
 .container__all_products {
     flex-wrap: wrap;
     margin-bottom: 20px;
@@ -867,6 +872,12 @@ body {
 
 .container__all_products h4 {
     margin-top: 10px;
+}
+
+.catalog__sort {
+    border: none;
+    background: none;
+    margin-bottom: 10px;
 }
 
 .item__bottom {

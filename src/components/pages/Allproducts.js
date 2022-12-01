@@ -1,8 +1,7 @@
-import { getElementError } from "@testing-library/react";
 import React, {useContext, useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import { MainContext, useRef } from "../../App";
-import Swal from 'sweetalert2'
+import Logo from '../../images/logo.png';
 
 
 function Allproducts () {
@@ -10,9 +9,10 @@ function Allproducts () {
 	const {idbasket, setBasket} = useContext(MainContext);
 	const {store, setStore} = useContext(MainContext);
 	const {count, setCount} = useContext(MainContext);
+	const {addCart, addCounter} = useContext(MainContext);
 
-	const [active, setActive] = useState({clname:"name0"});
-	console.log(active)
+	
+	const[sortStatus, setSortStatus] = useState(false);
 
 	useEffect(() => {
 		
@@ -38,54 +38,18 @@ function Allproducts () {
 	
 	console.log(idbasket)
 
-	function onClickBTN(id) {
-		let activeTmp = active;
-		idbasket.forEach(e => {
-			activeTmp = {clname: 'name' + id}
-			
-		});
-		// activeTmp = {clname:'name' + id};
-		setActive(activeTmp);
-		
-		
-		// alert("Товар добавлен в корзину")
-	}
+	
 
+	function sort() {
+		let storeFilter = store;
+		storeFilter.sort((a,b) => {
+			return a.price - b.price;
+		})
+		setSortStatus(!sortStatus);
+		if(sortStatus) storeFilter.reverse();
 
-	function addCart (e, id, title) {
-		let basket = idbasket;
-		if(!id) return;
+		setStore([...storeFilter])
 		
-		basket.push(id);
-		const idbasketTmp = new Set(basket);
-		basket = [...idbasketTmp];
-		localStorage.setItem('BasketTmp', JSON.stringify(basket));
-		basket = localStorage.getItem('BasketTmp');
-		if (!basket) return;
-		if (basket) basket = JSON.parse(basket);
-		console.log(basket)
-		setBasket(basket)
-		addCounter()
-		onClickBTN(id)
-		
-		Swal.fire({
-			title: `${title}`,
-			text: 'Товар добавлен в корзину!',
-			icon: 'success',
-			confirmButtonText: 'OK',
-			heightAuto: 'false',
-			width: '200px',
-			
-		  })
-	}
-
-	function addCounter() {
-			let countTmp = count
-			countTmp = localStorage.getItem('BasketTmp')
-			if (!countTmp) return;
-			if (countTmp) countTmp = JSON.parse(countTmp)
-			countTmp = +countTmp.length
-			setCount(countTmp)
 	}
 
 	
@@ -94,12 +58,13 @@ function Allproducts () {
 	
 
 		return store.map((item, index) => {
+					let added = (idbasket.indexOf(item.id) !== -1) ? ' added': '';
 					return (
-						<div key={item.id} className="best__item allproducts__item">
+						<div key={item.id} added={added} className={"best__item allproducts__item" + added}>
 							<Link to={`/product/${item.id}/`}><img src={item.image} alt={item.category}></img></Link>
 							<h4>{item.title}</h4>
 							<div className="item__bottom">
-								<button key={item.id} onClick={(e) => addCart(e, item.id, item.title)} className={(active.clname === 'name' + (item.id)) ? "activeBTN" : ' '}>Add to cart</button>
+								<button key={item.id} onClick={(e) => addCart(e, item.id, item.title)} className={"btn__explore add_cart"}>{added ? "Remove" : "Add to cart"}</button>
 								<span>{item.price} $</span>
 							</div>
 						</div>)
@@ -111,7 +76,13 @@ function Allproducts () {
 				
 			<div className="page__title">
 				<h2>All products</h2>
-				<div className="container__best container__all_products">
+				<button onClick={sort} className="catalog__sort">
+					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-filter-circle" viewBox="0 0 16 16">
+  					<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+  					<path d="M7 11.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/>
+					</svg>
+				</button>
+				<div className={"container__best container__all_products"}>
 					{add()}
 				</div>
 		
